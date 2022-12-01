@@ -1,4 +1,5 @@
-import Data.Semigroup (Max (..))
+import Data.Ord (Down (..))
+import Data.List (sortOn)
 import Text.Read (readMaybe)
 
 calculateCalories :: [Maybe Int] -> [Int]
@@ -17,6 +18,7 @@ main = do
   let caloriesOpt = (readMaybe <$> ls) :: [Maybe Int]
   let calories = calculateCalories caloriesOpt
 
-  let max = getMax . mconcat . fmap Max
+  -- I know it could be done better
+  let top3 = (sum . take 3 . sortOn Down) calories
 
-  putStrLn $ show . max $ calories
+  putStrLn $ show top3
