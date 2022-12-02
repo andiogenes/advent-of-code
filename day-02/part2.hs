@@ -1,5 +1,3 @@
-data Result = Won Int | Draft Int | Lose Int
-
 data Hand = R | P | S deriving (Enum, Eq)
 
 data Hint = L | W | D
@@ -23,19 +21,15 @@ parseHint 'Y' = D
 parseHint 'Z' = W
 
 doRound :: String -> Int
-doRound (x : ' ' : y : []) = estimate $ resolve (parseHand x) (parseHint y)
+doRound (x : ' ' : y : []) = score (parseHint y) (parseHand x)
   where
-    resolve h L = Lose . decode . predHand $ h
-    resolve h D = Draft . decode $ h
-    resolve h W = Won . decode . succHand $ h
+    score L = decode . predHand
+    score D = (+ 3) . decode
+    score W = (+ 6) . decode . succHand
 
     decode R = 1
     decode P = 2
     decode S = 3
-
-    estimate (Won x) = x + 6
-    estimate (Draft x) = x + 3
-    estimate (Lose x) = x
 
 main :: IO ()
 main = do
